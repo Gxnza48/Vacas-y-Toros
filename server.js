@@ -159,6 +159,25 @@ app.prepare().then(() => {
     });
 
     socket.on('disconnect', () => {
+      // Allow players to be removed if they are just in the waiting room
+      for (const [id, game] of games.entries()) {
+        const playerIndex = game.players.findIndex(p => p.id === socket.id);
+        if (playerIndex !== -1) {
+          if (game.status === "waiting" || game.status === "selecting_secret") {
+            // Remove player if game hasn't started fully
+            game.players.splice(playerIndex, 1);
+            if (game.players.length === 0) {
+              games.delete(id);
+            } else {
+              game.status = "waiting";
+              broadcastState(id);
+            }
+          }
+          // Note: Full reconnect logic for 'playing' can be complex for MVP.
+          // We'll leave them in room ifplaying, so they can't reconnect right now, 
+          // but at least it fixes the room filling bug.
+        }
+      }
     });
   });
 
