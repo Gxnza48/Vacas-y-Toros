@@ -149,7 +149,7 @@ app.prepare().then(() => {
     socket.on('rematch', ({ gameId }) => {
       const game = games.get(gameId);
       if (game && game.status === "finished") {
-        game.status = "waiting";
+        game.status = "selecting_secret";
         game.history = [];
         game.winner = null;
         game.players.forEach(p => {

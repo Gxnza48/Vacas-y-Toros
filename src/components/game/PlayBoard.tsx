@@ -95,9 +95,15 @@ export function PlayBoard() {
                   {g.guess}
                 </div>
                 <div className="flex flex-col items-center pl-4 border-l border-current/20">
-                   <div className="flex gap-2">
-                     <span className="font-bold flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-current" /> {g.toros}</span>
-                     <span className="font-bold flex items-center gap-1 opacity-50"><div className="w-2 h-2 rounded-full border border-current" /> {g.vacas}</span>
+                   <div className="flex gap-3">
+                     <span className="font-bold flex items-center gap-1.5" title="Toros (Acertaste número y lugar)">
+                       <div className="w-2.5 h-2.5 rounded-full bg-current mb-[1px]" /> 
+                       {g.toros} T
+                     </span>
+                     <span className="font-bold flex items-center gap-1.5 opacity-60" title="Vacas (Acertaste número pero no lugar)">
+                       <div className="w-2.5 h-2.5 rounded-full border-2 border-current mb-[1px]" /> 
+                       {g.vacas} V
+                     </span>
                    </div>
                 </div>
               </div>
