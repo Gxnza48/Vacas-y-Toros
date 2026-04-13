@@ -64,11 +64,15 @@ app.prepare().then(() => {
       if (!game) {
         return callback({ error: "Partida no encontrada" });
       }
+      
+      const isAlreadyIn = game.players.some(p => p.id === socket.id);
+      
       if (game.players.length >= 2) {
-        const isAlreadyIn = game.players.some(p => p.id === socket.id);
         if (!isAlreadyIn) return callback({ error: "Partida llena" });
       } else {
-        game.players.push({ id: socket.id, secret: null, ready: false });
+        if (!isAlreadyIn) {
+          game.players.push({ id: socket.id, secret: null, ready: false });
+        }
       }
       
       if (game.players.length === 2 && game.status === "waiting") {
