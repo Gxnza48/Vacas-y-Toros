@@ -82,28 +82,23 @@ export function PlayBoard() {
         </div>
       </div>
 
-      {/* History Area */}
+      {/* History Area — only MY guesses */}
       <div className="overflow-y-auto mb-4 px-1 flex flex-col gap-3" style={{ minHeight: '120px', maxHeight: '40vh' }}>
-        {gameState?.history.length === 0 && (
+        {gameState?.history.filter(g => g.playerNumber === playerIndex).length === 0 && (
           <div className="text-center text-black/30 dark:text-white/30 py-8 text-sm">
             Aún no hay intentos. ¡Adivina el número!
           </div>
         )}
-        {gameState?.history.map((g, idx) => {
-          const isMine = g.playerNumber === playerIndex;
+        {gameState?.history.filter(g => g.playerNumber === playerIndex).map((g, idx) => {
           return (
             <div 
               key={idx}
-              className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
+              className="flex flex-col items-end"
             >
               <div className="text-xs font-bold uppercase tracking-wider mb-1 opacity-40">
-                {isMine ? 'Tú' : 'Rival'}
+                Intento #{idx + 1}
               </div>
-              <div className={`flex items-center gap-4 px-5 py-3 rounded-2xl shadow-sm ${
-                isMine 
-                  ? 'bg-black text-white dark:bg-white dark:text-black rounded-tr-sm' 
-                  : 'bg-black/5 dark:bg-white/5 text-black dark:text-white rounded-tl-sm border border-black/10 dark:border-white/10'
-              }`}>
+              <div className="flex items-center gap-4 px-5 py-3 rounded-2xl shadow-sm bg-black text-white dark:bg-white dark:text-black rounded-tr-sm">
                 <div className="text-3xl font-black tracking-[0.2em] -mr-[0.2em]">
                   {g.guess}
                 </div>
