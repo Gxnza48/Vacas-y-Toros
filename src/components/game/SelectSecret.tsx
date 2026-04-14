@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useToastStore } from '@/store/toastStore';
 import { motion } from 'framer-motion';
@@ -46,6 +46,23 @@ export function SelectSecret() {
       }
     });
   };
+
+  useEffect(() => {
+    if (isReady) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['1','2','3','4','5','6','7','8','9','0'].includes(e.key)) {
+        handleKeypad(e.key);
+      } else if (e.key === 'Backspace') {
+        handleBackspace();
+      } else if (e.key === 'Enter') {
+        if (secret.length === 3 && !loading) {
+          handleSubmit();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [secret, isReady, loading]);
 
   if (isReady) {
     return (

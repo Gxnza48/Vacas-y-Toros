@@ -20,14 +20,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
     setTheme(preferredTheme as 'light' | 'dark');
     if (preferredTheme === 'dark') document.documentElement.classList.add('dark');
 
-    // Socket Init
     const socket = io({
       path: '/socket.io',
       autoConnect: true,
     });
 
+    let sid = localStorage.getItem('vacas_session_id');
+    if (!sid) {
+      sid = Math.random().toString(36).substring(2, 10);
+      localStorage.setItem('vacas_session_id', sid);
+    }
+    
+    // Pass session id in auth or as a query
+    socket.auth = { sessionId: sid };
+
     socket.on('connect', () => {
-      setPlayerId(socket.id!);
+      setPlayerId(sid!);
     });
 
     socket.on('game_state', (state) => {
@@ -59,7 +67,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   if (!mounted) return null;
 
   return (
-    <div className={`min-h-[100dvh] transition-colors duration-500 bg-white dark:bg-[#0a0a0a] text-black dark:text-white pb-[env(safe-area-inset-bottom)]`}>
+    <div className={`min-h-[100dvh] flex flex-col transition-colors duration-500 bg-white dark:bg-[#0a0a0a] text-black dark:text-white pb-[env(safe-area-inset-bottom)]`}>
       <button 
         onClick={toggleTheme} 
         className="fixed top-6 right-6 z-50 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"

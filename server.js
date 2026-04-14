@@ -44,12 +44,14 @@ app.prepare().then(() => {
   });
 
   io.on('connection', (socket) => {
-    
+    const sessionId = socket.handshake.auth.sessionId;
+    if (!sessionId) return socket.disconnect();
+
     socket.on('create_game', (callback) => {
       const gameId = generateGameId();
       games.set(gameId, {
         id: gameId,
-        players: [{ id: socket.id, secret: null, ready: false }],
+        players: [{ id: sessionId, secret: null, ready: false }],
         status: "waiting",
         turn: Math.random() < 0.5 ? 0 : 1,
         history: [],
@@ -65,13 +67,13 @@ app.prepare().then(() => {
         return callback({ error: "Partida no encontrada" });
       }
       
-      const isAlreadyIn = game.players.some(p => p.id === socket.id);
+      const isAlreadyIn = game.players.some(p => p.id === sessionId);
       
       if (game.players.length >= 2) {
         if (!isAlreadyIn) return callback({ error: "Partida llena" });
       } else {
         if (!isAlreadyIn) {
-          game.players.push({ id: socket.id, secret: null, ready: false });
+          game.players.push({ id: sessionId, secret: null, ready: false });
         }
       }
       
@@ -92,7 +94,7 @@ app.prepare().then(() => {
         return callback({ error: "Tres dígitos únicos. El cero no está permitido." });
       }
 
-      const playerIndex = game.players.findIndex(p => p.id === socket.id);
+      const playerIndex = game.players.findIndex(p => p.id === sessionId);
       if (playerIndex === -1) return callback({ error: "No eres jugador" });
 
       game.players[playerIndex].secret = secret;
@@ -113,7 +115,7 @@ app.prepare().then(() => {
       const game = games.get(gameId);
       if (!game || game.status !== "playing") return callback({ error: "No en partida activa" });
 
-      const playerIndex = game.players.findIndex(p => p.id === socket.id);
+      const playerIndex = game.players.findIndex(p => p.id === sessionId);
       if (playerIndex === -1) return callback({ error: "No eres jugador" });
 
       if (game.turn !== playerIndex) return callback({ error: "No es tu turno" });
@@ -163,25 +165,9 @@ app.prepare().then(() => {
     });
 
     socket.on('disconnect', () => {
-      // Allow players to be removed if they are just in the waiting room
-      for (const [id, game] of games.entries()) {
-        const playerIndex = game.players.findIndex(p => p.id === socket.id);
-        if (playerIndex !== -1) {
-          if (game.status === "waiting" || game.status === "selecting_secret") {
-            // Remove player if game hasn't started fully
-            game.players.splice(playerIndex, 1);
-            if (game.players.length === 0) {
-              games.delete(id);
-            } else {
-              game.status = "waiting";
-              broadcastState(id);
-            }
-          }
-          // Note: Full reconnect logic for 'playing' can be complex for MVP.
-          // We'll leave them in room ifplaying, so they can't reconnect right now, 
-          // but at least it fixes the room filling bug.
-        }
-      }
+      // With sessions, we don't necessarily delete immediately. 
+      // Users can re-join with their session. We only clean rooms if we want timeouts.
+      // For MVP, we simply do not drop players on disconnect!
     });
   });
 
