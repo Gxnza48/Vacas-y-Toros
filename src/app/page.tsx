@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -32,7 +32,7 @@ export default function Home() {
             Vacas <span className="font-light text-black/40 dark:text-white/40">y</span> Toros
           </h1>
           <p className="text-black/60 dark:text-white/60 text-lg font-medium">
-            El clásico juego de mente, ahora multijugador.
+            Juegardo pa!
           </p>
         </div>
 

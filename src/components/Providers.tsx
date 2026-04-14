@@ -15,7 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     // Dark mode logic
-    const preferredTheme = localStorage.getItem('theme') || 
+    const preferredTheme = localStorage.getItem('theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     setTheme(preferredTheme as 'light' | 'dark');
     if (preferredTheme === 'dark') document.documentElement.classList.add('dark');
@@ -30,7 +30,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       sid = Math.random().toString(36).substring(2, 10);
       localStorage.setItem('vacas_session_id', sid);
     }
-    
+
     // Pass session id in auth or as a query
     socket.auth = { sessionId: sid };
 
@@ -68,8 +68,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <div className={`min-h-[100dvh] flex flex-col transition-colors duration-500 bg-white dark:bg-[#0a0a0a] text-black dark:text-white pb-[env(safe-area-inset-bottom)]`}>
-      <button 
-        onClick={toggleTheme} 
+      <button
+        onClick={toggleTheme}
         className="fixed top-6 right-6 z-50 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
         aria-label="Toggle theme"
       >
@@ -81,7 +81,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       </button>
       {children}
       <footer className="mt-auto py-6 text-center text-xs text-black/30 dark:text-white/20 tracking-wide">
-        hecho con &lt;3 para trini
+        hecho con 💕para trini.
       </footer>
       <ToastContainer />
     </div>
