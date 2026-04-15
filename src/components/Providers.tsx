@@ -80,8 +80,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         )}
       </button>
       {children}
-      <footer className="mt-auto py-6 text-center text-xs text-black/30 dark:text-white/20 tracking-wide">
-        hecho con 💕para trini.
+      <footer className="mt-auto py-6 text-center text-xs text-black/60 dark:text-white/60 tracking-wide font-medium">
+        hecho con 💕 para trini.
       </footer>
       <ToastContainer />
     </div>
